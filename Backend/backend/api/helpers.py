@@ -10,7 +10,6 @@ from datetime import datetime
 from .models import GlobalsDepartmentinfo, Batch, GlobalsDesignation
 from .serializers import GlobalExtraInfoSerializer, GlobalsHoldsDesignationSerializer, StudentSerializer
 import os
-import threading
 
 def create_password(data):
     user_name = data.get('username').lower().capitalize()

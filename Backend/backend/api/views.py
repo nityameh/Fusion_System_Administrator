@@ -37,18 +37,20 @@ def get_all_programmes(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_user_role_by_email(request):
-    email = request.query_params.get('email')
+def get_user_role_by_username(request):
+    username = request.query_params.get('username')
     
-    if not email:
-        return Response({"error": "Email parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
+    if not username:
+        return Response({"error": "Username parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
     
     try:
-        user = AuthUser.objects.get(email=email)
-        holds_designation_entries = GlobalsHoldsdesignation.objects.filter(user=user)
+        user = AuthUser.objects.get(username__iexact=username)
         holds_designation_entries = GlobalsHoldsdesignation.objects.filter(user=user)
         
-        designation_ids = [entry.designation.id for entry in holds_designation_entries]
+        if not holds_designation_entries.exists():
+            return Response({"error": "User has no designations."}, status=status.HTTP_404_NOT_FOUND)
+        
+        designation_ids = [entry.designation_id for entry in holds_designation_entries]
         
         roles = GlobalsDesignation.objects.filter(id__in=designation_ids)
         roles_serializer = GlobalsDesignationSerializer(roles, many=True)
@@ -66,13 +68,13 @@ def get_user_role_by_email(request):
 
 @api_view(['PUT'])
 def update_user_roles(request):
-    email = request.data.get('email')
+    username = request.data.get('username')
     roles_to_add = request.data.get('roles')
 
-    if not email or not roles_to_add:
-        return Response({"error": "Email and roles are required."}, status=status.HTTP_400_BAD_REQUEST)
+    if not username or not roles_to_add:
+        return Response({"error": "Username and roles are required."}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = get_object_or_404(AuthUser, email=email)
+    user = get_object_or_404(AuthUser, username__iexact=username)
 
     existing_roles = GlobalsHoldsdesignation.objects.filter(user=user)
     existing_role_names = set(existing_roles.values_list('designation__name', flat=True))
