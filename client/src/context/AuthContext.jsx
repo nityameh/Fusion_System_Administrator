@@ -33,7 +33,7 @@ export const AuthProvider = ({children}) =>{
       };
     
       window.addEventListener("storage", handleStorageChange);
-      window.addEventListener("beforeunload", handleUnload);
+      // window.addEventListener("beforeunload", handleUnload);
 
       
       const interval = setInterval(checkSession, 60000);
@@ -52,7 +52,7 @@ export const AuthProvider = ({children}) =>{
         document.removeEventListener("mousemove", resetSession);
         document.removeEventListener("keypress", resetSession);
         window.removeEventListener("storage", handleStorageChange);
-        window.removeEventListener("beforeunload", handleUnload);
+        // window.removeEventListener("beforeunload", handleUnload);
       };
     }, []);
 
