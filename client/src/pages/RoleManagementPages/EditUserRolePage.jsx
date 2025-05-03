@@ -17,7 +17,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { FaCheck, FaTimes } from 'react-icons/fa';
 
 const EditUserRolePage = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [userDetails, setUserDetails] = useState(null);
   const [roles, setRoles] = useState([]);
   const [currentRoles, setCurrentRoles] = useState([]);
@@ -34,7 +34,7 @@ const EditUserRolePage = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        API_URL + `/api/get-user-roles-by-email?email=${email}`
+        API_URL + `/api/get-user-roles-by-username?username=${username}`
       );
       setUserDetails(response.data.user);
       setCurrentRoles(response.data.roles);
@@ -46,7 +46,7 @@ const EditUserRolePage = () => {
         icon: xIcon,
         position: "top-center",
         withCloseButton: true,
-        message: "Could not fetch user details. Please check the email.",
+        message: "Could not fetch user details. Please check the username.",
         color: "red",
       });
     }
@@ -60,7 +60,7 @@ const EditUserRolePage = () => {
       console.log(updatedRoles);
 
       await axios.put(API_URL + `/api/update-user-roles/`, {
-        email: email,
+        username: username,
         roles: updatedRoles,
       });
 
@@ -116,7 +116,7 @@ const EditUserRolePage = () => {
     return () => {
       document.removeEventListener("keydown", handleEnterKeyPress);
     };
-  }, [email]);
+  }, [username]);
 
   const matches = useMediaQuery('(min-width: 768px)');
 
@@ -155,7 +155,7 @@ const EditUserRolePage = () => {
               wordBreak: "break-word",
             }}
           >
-            Edit User's Role
+            {"Edit User's Role"}
           </Title>
         </Button>
       </Flex>
@@ -167,14 +167,14 @@ const EditUserRolePage = () => {
           justifyContent: "center",
         }}
       >
-        {/* First Section - User Email Input */}
+        {/* First Section - Username Input */}
         <Box style={{ width: "100%", flex: 1 }}>
           <Stack spacing="1rem">
             <TextInput
-              label="User Email"
-              placeholder="Enter user email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              label="Username"
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
             <Button onClick={fetchUserAndRoleDetails}>Fetch User Details</Button>
